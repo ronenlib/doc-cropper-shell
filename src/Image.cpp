@@ -1,40 +1,30 @@
+#include "Image.hpp"
 #include <string>
-#include "opencv2/core.hpp"
+#include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
-#include "Image.hpp"
 
-#define WIN_SIZE 500
+using namespace std;
+using namespace cv;
+
 #define DEFAULT_NAME "blank"
 
 Image::Image() : name{DEFAULT_NAME}
 {
-  this->data = cv::Mat{};
+  this->data = Mat{};
 }
 
-Image::Image(const std::string &name) : name{name}
+Image::Image(const string &name) : name{name}
 {
-  this->data = cv::Mat{};
+  this->data = Mat{};
 }
 
-Image::Image(const std::string &name, const std::string &imgPath) : name{name}
+Image::Image(const string &name, const string &imgPath) : name{name}
 {
-  this->data = cv::imread(imgPath);
+  this->data = imread(imgPath);
 }
 
-void Image::display(bool isBlocking)
+const string &Image::getDisplayableName() const
 {
-  cv::namedWindow(name, cv::WINDOW_NORMAL);
-  cv::resizeWindow(name, WIN_SIZE, WIN_SIZE);
-  cv::imshow(name, this->data);
-
-  if (isBlocking)
-  {
-    cv::waitKey(0);
-  }
-}
-
-const cv::Mat &Image::getData() const
-{
-  return this->data;
+  return this->name;
 }

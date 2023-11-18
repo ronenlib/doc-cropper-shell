@@ -1,6 +1,11 @@
-#include <iostream>
 #include "Image.hpp"
-#include "ImageEdges.hpp"
+#include "operation/ImageOperation.hpp"
+#include "operation/ConvertGrayscale.hpp"
+#include "operation/Blur.hpp"
+#include "operation/DetectEdges.hpp"
+#include "operation/ContourDetect.hpp"
+#include <iostream>
+#include <opencv2/highgui.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -13,12 +18,18 @@ int main(int argc, char *argv[])
   }
 
   Image img("original", argv[1]);
+  
+  ImageOperation base(img);
+  ConvertGrayscale gray(base);
+  Blur blur(gray);
+  DetectEdges edges(blur);
+  ContourDetect contours(edges, img);
+  // EdgeDetection edgeDetection("edge", img.getDisplayableData());
 
-  img.display(false);
+  edges.apply();
+  edges.display();
 
-  ImageEdges edges("edges", img);
-
-  edges.display(true);
+  cv::waitKey(0);
 
   return 0;
 }
