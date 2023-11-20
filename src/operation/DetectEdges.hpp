@@ -1,7 +1,4 @@
 #include "BasicOperation.hpp"
-#include <string>
-
-using namespace std;
 
 #ifndef DOC_CROPPER_DETECT_EDGES_H
 #define DOC_CROPPER_DETECT_EDGES_H

@@ -1,12 +1,9 @@
+#include "types.hpp"
 #include <opencv2/core.hpp>
 #include <string>
 
-using namespace std;
-
 #ifndef DOC_CROPPER_DISPLAYABLE_H
 #define DOC_CROPPER_DISPLAYABLE_H
-
-typedef cv::Mat DisplayData;
 
 class Displayable
 {

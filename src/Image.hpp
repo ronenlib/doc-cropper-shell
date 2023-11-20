@@ -1,9 +1,7 @@
+#include "types.hpp"
 #include "Displayable.hpp"
 #include <string>
 #include <opencv2/core.hpp>
-
-using namespace std;
-using namespace cv;
 
 #ifndef DOC_CROPPER_IMAGE_H
 #define DOC_CROPPER_IMAGE_H

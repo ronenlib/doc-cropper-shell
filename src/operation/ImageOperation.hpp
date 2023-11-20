@@ -1,8 +1,6 @@
 #include "BasicOperation.hpp"
+#include "../types.hpp"
 #include "../Image.hpp"
-#include <string>
-
-using namespace std;
 
 #ifndef DOC_CROPPER_IMAGE_OPERATION_H
 #define DOC_CROPPER_IMAGE_OPERATION_H

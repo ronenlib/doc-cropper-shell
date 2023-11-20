@@ -1,3 +1,4 @@
+#include "types.hpp"
 #include "Displayable.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -5,16 +6,13 @@
 
 #define WIN_SIZE 500
 
-using namespace std;
-using namespace cv;
-
 void Displayable::display()
 {
     const string &name = this->getDisplayableName();
 
-    namedWindow(name, WINDOW_NORMAL);
-    resizeWindow(name, WIN_SIZE, WIN_SIZE);
-    imshow(name, this->data);
+    cv::namedWindow(name, cv::WINDOW_NORMAL);
+    cv::resizeWindow(name, WIN_SIZE, WIN_SIZE);
+    cv::imshow(name, this->data);
 }
 
 const DisplayData &Displayable::getDisplayableData() const

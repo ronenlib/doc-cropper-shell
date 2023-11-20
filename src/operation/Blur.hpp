@@ -1,7 +1,5 @@
+#include "../types.hpp"
 #include "BasicOperation.hpp"
-#include <string>
-
-using namespace std;
 
 #ifndef DOC_CROPPER_BLUR_H
 #define DOC_CROPPER_BLUR_H

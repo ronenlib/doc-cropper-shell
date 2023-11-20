@@ -1,8 +1,6 @@
 
 #include "ImageOperation.hpp"
 
-using namespace cv;
-
 const string ImageOperation::NAME = "Image";
 
 ImageOperation::ImageOperation(const Image &image): image{image} {
