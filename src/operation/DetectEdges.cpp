@@ -3,8 +3,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
-#define CANNY_THRESHOLD_1 75
-#define CANNY_THRESHOLD_2 200
+#define THRESHOLD_VAL 150
+#define MAX_VAL 255
 
 using namespace cv;
 
@@ -16,5 +16,5 @@ void DetectEdges::apply()
 
   const DisplayData &source = this->operation.getDisplayableData();
 
-  Canny(source, this->data, CANNY_THRESHOLD_1, CANNY_THRESHOLD_2);
+  threshold(source, this->data, THRESHOLD_VAL, MAX_VAL, THRESH_BINARY);
 }

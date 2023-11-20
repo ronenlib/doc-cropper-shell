@@ -3,7 +3,7 @@
 #include "operation/ConvertGrayscale.hpp"
 #include "operation/Blur.hpp"
 #include "operation/DetectEdges.hpp"
-#include "operation/ContourDetect.hpp"
+#include "operation/ContourRectExtract.hpp"
 #include <iostream>
 #include <opencv2/highgui.hpp>
 
@@ -23,11 +23,10 @@ int main(int argc, char *argv[])
   ConvertGrayscale gray(base);
   Blur blur(gray);
   DetectEdges edges(blur);
-  ContourDetect contours(edges, img);
-  // EdgeDetection edgeDetection("edge", img.getDisplayableData());
+  ContourRectExtract rect(edges, img);
 
-  edges.apply();
-  edges.display();
+  rect.apply();
+  rect.display();
 
   cv::waitKey(0);
 
