@@ -1,27 +1,22 @@
 #include "../types.hpp"
-#include "ContourRectExtract.hpp"
-#include "DetectEdges.hpp"
-#include "../Image.hpp"
+#include "ContourRectCrop.hpp"
+#include "ContourRectFinder.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
 #include <limits.h>
 
-ContourRectExtract::ContourRectExtract(DetectEdges &operation, const Image &image)
-    : BasicOperation("ContourRectExtract", operation), image{image} {}
+ContourRectCrop::ContourRectCrop(ContourRectFinder &operation)
+    : BasicOperation("ContourRectCrop", operation), operation{operation} {}
 
-void ContourRectExtract::apply()
+void ContourRectCrop::apply()
 {
   this->operation.apply();
 
-  this->extractAllContours();
-
-  bool isDocFound = this->findDocContour();
-
-  if (!isDocFound)
+  if (!this->operation.getIsRectFound())
   {
     std::cout << "No document boundaries found, using full image" << std::endl;
-    this->data = this->image.getDisplayableData().clone();
+    this->data = this->operation.getDisplayableData().clone();
     return;
   }
 
@@ -31,40 +26,13 @@ void ContourRectExtract::apply()
   this->extractDocContour(rearrangedPoints);
 }
 
-void ContourRectExtract::extractAllContours()
+void ContourRectCrop::rearrangeRectPoint(VectorFloatPoint &rearrangedPoints)
 {
-  const DisplayData &edgeData = this->operation.getDisplayableData();
+  VectorPoint &rect = this->operation.getRect();
+  Point *topLeft = &rect[0];
+  Point *bottomRight = &rect[0];
 
-  findContours(edgeData, this->contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
-}
-
-bool ContourRectExtract::findDocContour()
-{
-  int maxLen = 0;
-
-  for (auto it = this->contours.begin(); it != this->contours.end(); ++it)
-  {
-    VectorPoint rect;
-
-    int len = cv::arcLength(*it, true);
-    cv::approxPolyDP(*it, rect, 0.02 * len, true);
-
-    if (maxLen < len && rect.size() == 4)
-    {
-      maxLen = len;
-      this->rect = rect;
-    }
-  }
-
-  return maxLen != 0;
-}
-
-void ContourRectExtract::rearrangeRectPoint(VectorFloatPoint &rearrangedPoints)
-{
-  Point *topLeft = &this->rect[0];
-  Point *bottomRight = &this->rect[0];
-
-  for (Point &point : this->rect)
+  for (Point &point : rect)
   {
     if (point.x + point.y > bottomRight->x + bottomRight->y)
     {
@@ -79,7 +47,7 @@ void ContourRectExtract::rearrangeRectPoint(VectorFloatPoint &rearrangedPoints)
 
   VectorPtrPoint pointsRem;
 
-  for (Point &point : this->rect)
+  for (Point &point : rect)
   {
     if (&point != topLeft && &point != bottomRight)
     {
@@ -98,7 +66,7 @@ void ContourRectExtract::rearrangeRectPoint(VectorFloatPoint &rearrangedPoints)
   rearrangedPoints.push_back(FloatPoint(pointsRem[0]->x, pointsRem[0]->y));
 }
 
-void ContourRectExtract::extractDocContour(VectorFloatPoint &points)
+void ContourRectCrop::extractDocContour(VectorFloatPoint &points)
 {
   double width = this->euclideanDist(points[0], points[1]);
   double height = this->euclideanDist(points[0], points[3]);
@@ -112,12 +80,12 @@ void ContourRectExtract::extractDocContour(VectorFloatPoint &points)
 
   this->data = cv::getPerspectiveTransform(points, dst);
 
-  const DisplayData &source = this->image.getDisplayableData();
+  const DisplayData &source = this->operation.getDisplayableData();
 
   cv::warpPerspective(source, this->data, this->data, cv::Size(width, height));
 }
 
-double ContourRectExtract::euclideanDist(FloatPoint &p1, FloatPoint &p2)
+double ContourRectCrop::euclideanDist(FloatPoint &p1, FloatPoint &p2)
 {
   return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }

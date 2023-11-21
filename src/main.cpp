@@ -1,11 +1,12 @@
 #include "Image.hpp"
+#include "Renderer.hpp"
 #include "operation/ImageOperation.hpp"
 #include "operation/ConvertGrayscale.hpp"
 #include "operation/Blur.hpp"
 #include "operation/DetectEdges.hpp"
-#include "operation/ContourRectExtract.hpp"
+#include "operation/ContourRectFinder.hpp"
+#include "operation/ContourRectCrop.hpp"
 #include <iostream>
-#include <opencv2/highgui.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -17,18 +18,19 @@ int main(int argc, char *argv[])
     return -1;
   }
 
+  Renderer renderer;
+
   Image img("original", argv[1]);
   
   ImageOperation base(img);
   ConvertGrayscale gray(base);
   Blur blur(gray);
   DetectEdges edges(blur);
-  ContourRectExtract rect(edges, img);
+  ContourRectFinder rectFinder(edges, img);
+  ContourRectCrop rect(rectFinder);
 
   rect.apply();
-  rect.display();
-
-  cv::waitKey(0);
+  rect.display(renderer);
 
   return 0;
 }

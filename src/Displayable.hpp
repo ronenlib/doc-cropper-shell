@@ -1,4 +1,5 @@
 #include "types.hpp"
+#include "Renderer.hpp"
 #include <opencv2/core.hpp>
 #include <string>
 
@@ -11,7 +12,7 @@ protected:
     DisplayData data;
 
 public:
-    virtual void display();
+    virtual void display(Renderer &renderer);
     const DisplayData &getDisplayableData() const;
     virtual const string &getDisplayableName() const = 0;
 };
